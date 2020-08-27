@@ -16,10 +16,8 @@
   }
 
 
-
   </style>
-  <!--  <script src="js/velocity.min.js"></script>-->
-  <!--  <script src="js/velocity.ui.min.js"></script>-->
+
 </head>
 <body>
 <canvas id="canvas" width="600" height="600"></canvas>
@@ -27,38 +25,51 @@
 <script>
 const cvs = document.getElementById('canvas')
 
+class Prize {
+  constructor(prizeName, price = 0) {
+    this.prizeName = prizeName
+    this.price = price
+  }
+}
 
 class Pie {
-  constructor(ctx, x, y, r, startAngle, angle) {
+  constructor(ctx, startAngle, angle, Wheel) {
     this.ctx = ctx
-    this.x = x
-    this.y = y
-    this.r = r
     this.startAngle = startAngle
     this.angle = angle
-    this.endAngle = this.startAngle + this.angle
-    // this.textCenterX = 0.5 * this.r
-    // this.textCenterY = Math.tan(0.5 * this.angle) * this.textCenterX
+    this.x = Wheel.width / 2
+    this.y = Wheel.height / 2
+    this.r = Wheel.r
+    this.prize = null
   }
 
-
-  drawPrize(prize) {
-    // this.ctx.save()
-    // this.ctx.translate(this.x, this.y)
-    // this.ctx.rotate(this.startAngle)
-    // this.ctx.translate(this.textCenterX, this.textCenterY)
-    // this.ctx.rotate(0.5 * Math.PI + 0.5 * this.angle)
-    // this.ctx.font = '40px 宋体'
-    // this.ctx.fillStyle = '#ffffff'
-    // this.ctx.textAlign = 'center'
-    // this.ctx.fillText('张三', 0, 0)
-    // this.ctx.restore()
+  moveToCenter() {
+    this.ctx.translate(this.x, this.y)
   }
+
+  moveToDrawInfoPosition(offsetCenterDistance = 0) {
+    this.moveToCenter()
+    this.ctx.rotate(0.5 * Math.PI + 0.5 * this.angle + this.startAngle)
+    this.ctx.translate(0, -offsetCenterDistance)
+  }
+
+  drawText(text, size, color, offsetCenterDistance = 0) {
+    this.ctx.save()
+    this.ctx.font = `${size}px  宋体`
+    this.ctx.fillStyle = color
+    this.ctx.textAlign = 'center'
+    this.ctx.textBaseline = 'middle'
+    this.moveToDrawInfoPosition(offsetCenterDistance)
+    const textMaxLength = Math.tan(this.angle) * Math.abs(offsetCenterDistance) * 0.8
+    this.ctx.fillText(text, 0, 0, textMaxLength)
+    this.ctx.restore()
+  }
+
 
   drawBg(color) {
     this.ctx.beginPath()
     this.ctx.save()
-    this.ctx.translate(this.x, this.y)
+    this.moveToCenter()
     this.ctx.rotate(this.startAngle)
     this.ctx.arc(0, 0, this.r, 0, this.angle)
     this.ctx.lineTo(0, 0)
@@ -66,6 +77,12 @@ class Pie {
     this.ctx.fillStyle = color
     this.ctx.fill()
     this.ctx.restore()
+  }
+
+  drawPrize(prize) {
+    this.prize = prize
+    this.drawText(prize.prizeName, 40, '#ffffff', this.r * 0.8)
+    this.drawText(prize.price + '元', 24, '#ffffff', this.r * 0.6)
   }
 }
 
@@ -85,27 +102,33 @@ class Wheel {
   }
 
   // 绘制背景
-  drawBg(color) {
-    this.ctx.fillStyle = color
+  drawInnerShadow() {
+    const radialGradient = this.ctx.createRadialGradient(this.centerX, this.centerY, this.r * 0.95, this.centerX, this.centerY, this.r)
+    radialGradient.addColorStop(0, 'rgba(0,0,0,0)')
+    radialGradient.addColorStop(1, 'rgba(0,0,0,0.2)')
     this.ctx.arc(this.centerX, this.centerY, this.r, 0, this.deg2rad(360))
+    this.ctx.fillStyle = radialGradient
     this.ctx.fill()
   }
 
   // 绘制扇形
-  drawSector(count, colorArray) {
+  drawPies(count, colorArray) {
     const pieAngle = this.deg2rad(360 / count)
     for (let i = 0; i < count; i++) {
       const color = colorArray[i % colorArray.length]
-      const pie = new Pie(this.ctx, this.centerX, this.centerY, this.r, i * pieAngle, pieAngle)
+      const pie = new Pie(this.ctx, i * pieAngle, pieAngle, this)
       pie.drawBg(color)
-      // pie.drawPrize()
+      const prize = new Prize('手机', 10)
+      pie.drawPrize(prize)
       this.pies.push(pie)
     }
   }
 }
 
 const wheel = new Wheel(cvs)
-wheel.drawBg('#ffffff')
-wheel.drawSector(2, ['red', 'green'])
+wheel.drawPies(8, ['red', 'green'])
+wheel.drawInnerShadow()
+
+
 </script>
 </html>
