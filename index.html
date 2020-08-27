@@ -43,12 +43,12 @@ class Pie {
     this.prize = null
   }
 
-  moveToCenter() {
-    this.ctx.translate(this.x, this.y)
-  }
+  // moveToCenter() {
+  //   this.ctx.translate(this.x, this.y)
+  // }
 
   moveToDrawInfoPosition(offsetCenterDistance = 0) {
-    this.moveToCenter()
+    // this.moveToCenter()
     this.ctx.rotate(0.5 * Math.PI + 0.5 * this.angle + this.startAngle)
     this.ctx.translate(0, -offsetCenterDistance)
   }
@@ -60,7 +60,7 @@ class Pie {
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
     this.moveToDrawInfoPosition(offsetCenterDistance)
-    const textMaxLength = Math.tan(this.angle) * Math.abs(offsetCenterDistance) * 0.8
+    const textMaxLength = Math.min(Math.tan(0.5 * this.angle) * Math.abs(offsetCenterDistance) * 2 * 0.8, this.r * 2)
     this.ctx.fillText(text, 0, 0, textMaxLength)
     this.ctx.restore()
   }
@@ -69,7 +69,7 @@ class Pie {
   drawBg(color) {
     this.ctx.beginPath()
     this.ctx.save()
-    this.moveToCenter()
+    // this.moveToCenter()
     this.ctx.rotate(this.startAngle)
     this.ctx.arc(0, 0, this.r, 0, this.angle)
     this.ctx.lineTo(0, 0)
@@ -101,12 +101,16 @@ class Wheel {
     return (deg / 180) * Math.PI
   }
 
+  moveToCenter() {
+    this.ctx.translate(this.centerX, this.centerY)
+  }
+
   // 绘制背景
   drawInnerShadow() {
-    const radialGradient = this.ctx.createRadialGradient(this.centerX, this.centerY, this.r * 0.95, this.centerX, this.centerY, this.r)
+    const radialGradient = this.ctx.createRadialGradient(0, 0, this.r * 0.95, 0, 0, this.r)
     radialGradient.addColorStop(0, 'rgba(0,0,0,0)')
     radialGradient.addColorStop(1, 'rgba(0,0,0,0.2)')
-    this.ctx.arc(this.centerX, this.centerY, this.r, 0, this.deg2rad(360))
+    this.ctx.arc(0, 0, this.r, 0, this.deg2rad(360))
     this.ctx.fillStyle = radialGradient
     this.ctx.fill()
   }
@@ -123,12 +127,35 @@ class Wheel {
       this.pies.push(pie)
     }
   }
+
+  draw() {
+    // this.moveToCenter()
+    this.drawPies(2, ['red', 'green', 'yellow'])
+    this.drawInnerShadow()
+  }
+
+  // 旋转
+  run(speed = 1) {
+    this.ctx.save()
+    if (!this.runAngle || this.runAngle >= 360) {
+      this.runAngle = 0
+    }
+    this.ctx.clearRect(0, 0, this.width, this.height)
+    this.moveToCenter()
+    this.ctx.rotate(this.deg2rad(this.runAngle))
+    this.draw()
+    // todo
+    this.runAngle += 1
+    this.ctx.restore()
+    // todo
+    window.requestAnimationFrame(this.run.bind(this))
+  }
 }
 
 const wheel = new Wheel(cvs)
-wheel.drawPies(8, ['red', 'green'])
-wheel.drawInnerShadow()
-
+// todo
+// wheel.draw()
+wheel.run(5)
 
 </script>
 </html>
