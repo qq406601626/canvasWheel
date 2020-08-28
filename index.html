@@ -43,12 +43,7 @@ class Pie {
     this.prize = null
   }
 
-  // moveToCenter() {
-  //   this.ctx.translate(this.x, this.y)
-  // }
-
   moveToDrawInfoPosition(offsetCenterDistance = 0) {
-    // this.moveToCenter()
     this.ctx.rotate(0.5 * Math.PI + 0.5 * this.angle + this.startAngle)
     this.ctx.translate(0, -offsetCenterDistance)
   }
@@ -69,7 +64,6 @@ class Pie {
   drawBg(color) {
     this.ctx.beginPath()
     this.ctx.save()
-    // this.moveToCenter()
     this.ctx.rotate(this.startAngle)
     this.ctx.arc(0, 0, this.r, 0, this.angle)
     this.ctx.lineTo(0, 0)
@@ -87,6 +81,7 @@ class Pie {
 }
 
 class Wheel {
+  requestFrame = null
   constructor(cvs) {
     this.ctx = cvs.getContext('2d')
     this.width = cvs.width
@@ -95,6 +90,7 @@ class Wheel {
     this.centerY = this.height / 2
     this.r = this.width / 2
     this.pies = []
+    this.moveToCenter()
   }
 
   deg2rad(deg) {
@@ -127,35 +123,32 @@ class Wheel {
       this.pies.push(pie)
     }
   }
-
-  draw() {
-    // this.moveToCenter()
-    this.drawPies(2, ['red', 'green', 'yellow'])
+  // 绘制
+  draw(prizeList,colorArray) {
+    this.drawPies(4, ['red', 'green', 'yellow', 'blue'])
     this.drawInnerShadow()
   }
 
   // 旋转
-  run(speed = 1) {
-    this.ctx.save()
-    if (!this.runAngle || this.runAngle >= 360) {
-      this.runAngle = 0
-    }
+  play(step = 0.1, maxSpeed = 15) {
     this.ctx.clearRect(0, 0, this.width, this.height)
-    this.moveToCenter()
-    this.ctx.rotate(this.deg2rad(this.runAngle))
+    this.ctx.rotate(this.deg2rad(Math.min(step,maxSpeed)))
     this.draw()
-    // todo
-    this.runAngle += 1
-    this.ctx.restore()
-    // todo
-    window.requestAnimationFrame(this.run.bind(this))
+    this.requestFrame = window.requestAnimationFrame(() => {
+      this.play(step+0.1, maxSpeed)
+    })
+  }
+
+  // 停止旋转
+  stop() {
+    window.cancelAnimationFrame(this.requestFrame)
   }
 }
 
 const wheel = new Wheel(cvs)
-// todo
-// wheel.draw()
-wheel.run(5)
+wheel.draw()
+// wheel.play()
+
 
 </script>
 </html>
