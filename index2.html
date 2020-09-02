@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="js/math.js"></script>
+  <style>
+  * {
+    margin: 0;
+  }
+
+  body {
+    width: 100vw;
+    background: #3d3d4a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0turn);
+    }
+    to {
+      transform: rotate(8turn);
+    }
+  }
+
+  .container {
+    width: 600px;
+    height: 600px;
+    border-radius: 100%;
+    background: repeating-conic-gradient(red 0deg 60deg, green 60deg 120deg);
+    position: relative;
+    animation: rotate 8s ease-in-out infinite;
+  }
+
+  .container .item {
+    width: 300px;
+    height: 50%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform-origin: center bottom;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container .item.item-1 {
+    transform: translateX(-50%) rotateZ(30deg);
+  }
+
+  .container .item.item-2 {
+    transform: translateX(-50%) rotateZ(90deg);
+  }
+
+  .container .line {
+    width: 1px;
+    height: 50%;
+    background: #ffffff;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform-origin: center bottom;
+  }
+
+  .container .line.line-1 {
+    transform: translateX(-50%) rotateZ(0deg);
+  }
+
+  .container .line.line-2 {
+    transform: translateX(-50%) rotateZ(60deg);
+  }
+
+  /*-----------------------------*/
+  .container2 {
+    width: 600px;
+    height: 600px;
+    border-radius: 100%;
+    background: repeating-conic-gradient(red 0deg 45deg, green 45deg 90deg);
+    position: relative;
+    animation: rotate 8s ease-in-out infinite;
+  }
+
+  .container2 .item {
+    width: 230px;
+    height: 50%;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform-origin: center bottom;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container2 .item.item-1 {
+    transform: translateX(-50%) rotateZ(22.5deg);
+  }
+
+  .container2 .item.item-2 {
+    transform: translateX(-50%) rotateZ(67.5deg);
+  }
+
+  .container2 .line {
+    width: 1px;
+    height: 50%;
+    background: #ffffff;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform-origin: center bottom;
+  }
+
+  .container2 .line.line-1 {
+    transform: translateX(-50%) rotateZ(0deg);
+  }
+
+  .container2 .line.line-2 {
+    transform: translateX(-50%) rotateZ(45deg);
+  }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="item item-1">11111</div>
+  <div class="item item-2">22222</div>
+  <div class="line line-1"></div>
+  <div class="line line-2"></div>
+</div>
+<div class="container2">
+  <div class="item item-1">11111</div>
+  <div class="item item-2">22222</div>
+  <div class="line line-1"></div>
+  <div class="line line-2"></div>
+</div>
+<script>
+const print = console.log
+
+</script>
+</body>
+</html>
